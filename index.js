@@ -5,8 +5,6 @@ require('dotenv').config();
 
 const app = express()
 
-const User = require('./Models/User')
-
 //forma de ler JSON /middleware
 app.use(
     express.urlencoded({
@@ -17,23 +15,8 @@ app.use(
 app.use(express.json())
 
 //rotas
-
-app.post('/user', async (req, res) => {
-
-    const { name, email, password } = req.body
-    if (!name || !email || !password) res.status(422).json({ message: 'Corpo de requisição errado! (name, email, password)' })
-    const newUser = {
-        name, email, password
-    }
-    try {
-
-        await User.create(newUser)
-        res.status(201).json({ message: 'User cadastrado com sucesso' })
-    } catch (e) {
-        console.log(e)
-        res.status(500).json({ error: e })
-    }
-})
+const userRoutes = require('./routes/userRoutes')
+app.use('/user', userRoutes)
 
 // rota inicial / endpoint
 app.get('/', (req, res) => {
