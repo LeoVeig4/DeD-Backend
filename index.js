@@ -16,7 +16,9 @@ app.use(express.json())
 
 //rotas
 const userRoutes = require('./routes/userRoutes')
-app.use('/user', userRoutes)
+const authRoutes = require("./routes/authRoutes")
+app.use('/users', userRoutes)
+app.use('/auth', authRoutes)
 
 // rota inicial / endpoint
 app.get('/', (req, res) => {
@@ -24,7 +26,7 @@ app.get('/', (req, res) => {
 })
 //
 //entregar uma porta
-mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster-test.0qznri4.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
+mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.8sm8kka.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
     .then(() => {
         console.log('Conectado ao mongoDB')
         app.listen(3000)

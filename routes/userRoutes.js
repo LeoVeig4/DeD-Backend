@@ -1,107 +1,85 @@
-const router = require('express').Router()
-const User = require('../Models/User')
+const express = require('express');
+const router = express.Router();
+const User = require('../models/User.js');
 
-
-//create
+// Rota para criar um novo usuário
 router.post('/', async (req, res) => {
+    console.log(req.body);
+  try {
+    const { email, name, password } = req.body;
+    const user = new User({ email, name, password });
+    console.log(email,name, password);
+    await user.save();
 
-    const { name, email, password } = req.body
-    if (!name || !email || !password) {
-        res.status(422).json({ message: 'Corpo de requisição errado! (name, email, password)' })
-        return
-    }
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
 
-    const newUser = {
-        name, email, password
-    }
-    try {
-        await User.create(newUser)
-        res.status(201).json({ message: 'User cadastrado com sucesso' })
-    } catch (e) {
-        console.log(e)
-        res.status(500).json({ error: e })
-    }
-})
-
-//index
+// Rota para obter todos os usuários
 router.get('/', async (req, res) => {
-    try {
+  try {
+    const users = await User.find();
 
-        const users = await User.find()
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao obter os usuários' });
+  }
+});
 
-        res.status(200).json(users)
-    } catch (e) {
-        console.log(e)
-        res.status(500).json({ error: e })
-    }
-})
-
-//show
+// Rota para obter um usuário pelo ID
 router.get('/:id', async (req, res) => {
-    try {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
 
-        const user = await User.findOne({ _id: req.params.id })
-
-        if (!user) {
-            res.status(422).json({ message: 'O usuário não foi encontrado!' })
-            return
-        }
-
-        res.status(200).json(user)
-    } catch (e) {
-        console.log(e)
-        res.status(500).json({ error: e })
-    }
-})
-
-//update (PUT) (PATCH)
-router.put('/:id', async (req, res) => {
-    const { name, email, password } = req.body
-    if (!name || !email || !password) {
-        res.status(422).json({ message: 'Corpo de requisição errado! (name, email, password)' })
-        return
-    }
-    const user = {
-        name, email, password
-    }
-    try {
-
-        const updateUser = await User.updateOne({ _id: req.params.id }, user)
-        if (!updateUser) {
-            res.status(422).json({ message: 'O usuário não foi encontrado!' })
-            return
-        }
-
-        if (updateUser.matchedCount === 0) {
-            res.status(422).json({ message: 'O usuário não foi encontrado!' })
-            return
-        }
-
-        res.status(200).json(user)
-    } catch (e) {
-        console.log(e)
-        res.status(500).json({ error: e })
-    }
-})
-
-//delete
-router.delete('/:id', async (req, res) => {
-
-    const user = await User.findOne({ _id: req.params.id })
     if (!user) {
-        res.status(422).json({ message: 'O usuário não foi encontrado!' })
-        return
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao obter o usuário' });
+  }
+});
+
+// Rota para atualizar um usuário pelo ID
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email, name, password } = req.body;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
-    try {
+    user.email = email;
+    user.name = name;
+    user.password = password;
 
-        await User.deleteOne({ _id: req.params.id })
-        res.status(200).json({ message: "Usuário removido com sucesso" })
+    await user.save();
 
-    } catch (e) {
-        console.log(e)
-        res.status(500).json({ error: e })
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao atualizar o usuário' });
+  }
+});
+
+// Rota para excluir um usuário pelo ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findByIdAndRemove(id);
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
     }
-})
 
-module.exports = router
+    res.json({ message: 'Usuário removido com sucesso' });
+  } catch (error) {
+    res.status(500).json({ error: 'Erro ao excluir o usuário' });
+  }
+});
+
+module.exports = router;
