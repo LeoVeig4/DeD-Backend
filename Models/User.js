@@ -20,6 +20,11 @@ const userSchema = mongoose.Schema({
         type:String,
         unique:true,
         default: uuidv4,
+    },
+    cards: {
+      spells:[mongoose.Schema.Types.Mixed],
+      classes:[mongoose.Schema.Types.Mixed],
+      monsters:[mongoose.Schema.Types.Mixed],
     }
 })
 

@@ -17,8 +17,10 @@ app.use(express.json())
 //rotas
 const userRoutes = require('./routes/userRoutes')
 const authRoutes = require("./routes/authRoutes")
+const cardsRoutes = require("./routes/cardsRoutes")
 app.use('/users', userRoutes)
 app.use('/auth', authRoutes)
+app.use("/cards",cardsRoutes)
 
 // rota inicial / endpoint
 app.get('/', (req, res) => {

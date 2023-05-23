@@ -6,9 +6,8 @@ const User = require('../models/User.js');
 router.post('/', async (req, res) => {
     console.log(req.body);
   try {
-    const { email, name, password } = req.body;
-    const user = new User({ email, name, password });
-    console.log(email,name, password);
+    const { email, name, password, cards } = req.body;
+    const user = new User({ email, name, password,cards });
     await user.save();
 
     res.status(201).json(user);
