@@ -22,11 +22,34 @@ const userSchema = mongoose.Schema({
         default: uuidv4,
     },
     cards: {
-      spells:[mongoose.Schema.Types.Mixed],
-      classes:[mongoose.Schema.Types.Mixed],
-      monsters:[mongoose.Schema.Types.Mixed],
+      spells: {
+        type: Object,
+        default: {}
+      },
+      classes: {
+        type: Object,
+        default: {}
+      },
+      monsters: {
+        type: Object,
+        default: {}
+      },
     }
 })
+
+userSchema.pre('save', function(next){
+  const cards = this.cards
+  if(!cards.spells){
+    cards.spells = {}
+  }
+  if(!cards.monsters){
+    cards.monsters = {}
+  }
+  if(!cards.classes){
+    cards.classes = {}
+  }
+  next();
+});
 
 const saltRounds = 10;
 userSchema.pre('save', function(next) {
