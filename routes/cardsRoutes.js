@@ -38,8 +38,11 @@ router.get("/:id", async (req, res) => {
   return res.status(200).json(user.cards)
 })
 
-router.post("/:id", authenticateUser, async (req, res) => {
-  const { id } = req.params;
+router.post("/", authenticateUser, async (req, res) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ message: 'Token de autenticação não fornecido' });
+  }
 
   const { card, type } = req.body;
 
@@ -48,6 +51,9 @@ router.post("/:id", authenticateUser, async (req, res) => {
   }
 
   try {
+    const decodedToken = jwt.verify(token, process.env.salt);
+    const id = decodedToken.userId;
+
     const user = await User.findByIdAndUpdate(id,
       { $set: { [`cards.${type}.${card.index}`]: card } },
       { new: true }
@@ -67,7 +73,10 @@ router.post("/:id", authenticateUser, async (req, res) => {
 
 
 router.delete("/:id", authenticateUser, async (req, res) => {
-  const { id } = req.params;
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ message: 'Token de autenticação não fornecido' });
+  }
   const { index, type } = req.body;
 
   if (!['spells', 'monsters', 'classes'].includes(type)) {
@@ -75,6 +84,9 @@ router.delete("/:id", authenticateUser, async (req, res) => {
   }
 
   try {
+    const decodedToken = jwt.verify(token, process.env.salt);
+    const id = decodedToken.userId;
+    
     const user = await User.findByIdAndUpdate(
       id,
       { $unset: { [`cards.${type}.${index}`]: "" } },
