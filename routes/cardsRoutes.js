@@ -28,8 +28,15 @@ const authenticateUser = async (req, res, next) => {
 };
 
 
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
+router.get("/", async (req, res) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ message: 'Token de autenticação não fornecido' });
+  }
+
+  const decodedToken = jwt.verify(token, process.env.salt);
+  const id = decodedToken.userId;
+
   const user = await User.findById(id);
   if (!user) {
     return res.status(401).json({ message: 'Usuário não encontrado' });
@@ -72,7 +79,7 @@ router.post("/", authenticateUser, async (req, res) => {
 });
 
 
-router.delete("/:id", authenticateUser, async (req, res) => {
+router.delete("/", authenticateUser, async (req, res) => {
   const token = req.headers.authorization;
   if (!token) {
     return res.status(401).json({ message: 'Token de autenticação não fornecido' });
@@ -86,7 +93,7 @@ router.delete("/:id", authenticateUser, async (req, res) => {
   try {
     const decodedToken = jwt.verify(token, process.env.salt);
     const id = decodedToken.userId;
-    
+
     const user = await User.findByIdAndUpdate(
       id,
       { $unset: { [`cards.${type}.${index}`]: "" } },
