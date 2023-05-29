@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 })
 //
 //entregar uma porta
-app.listen(3000);
+app.listen(process.env.PORT);
 // mongoose.connect(`${process.env.CONNECT_MONGO_URL}`)
 
 //     .then(() => {
