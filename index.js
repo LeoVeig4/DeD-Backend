@@ -5,8 +5,24 @@ const mongoose = require('mongoose')
 require('dotenv').config();
 
 const app = express()
+var connected = false
 
+const connectDatabase = (req, res, next) => {
+    if (!connected) {
+        mongoose.connect(`${process.env.CONNECT_MONGO_URL}`)
+
+            .then(() => {
+                console.log('Conectado ao mongoDB')
+                connected = true
+            }).catch((err) => {
+                connected = false
+                console.log(err)
+            })
+    }
+    next(); // Call next to pass control to the next middleware
+};
 //forma de ler JSON /middleware
+app.use(connectDatabase)
 app.use(
     express.urlencoded({
         extended: true
@@ -14,6 +30,8 @@ app.use(
 )
 
 app.use(express.json())
+
+
 
 app.use(cors({
     origin: '*',
@@ -39,4 +57,8 @@ mongoose.connect(`${process.env.CONNECT_MONGO_URL}`)
 
     .then(() => {
         console.log('Conectado ao mongoDB')
-    }).catch((err) => console.log(err))
+        connected = true
+    }).catch((err) => {
+        connected = false
+        console.log(err)
+    })
