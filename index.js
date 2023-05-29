@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 })
 //
 //entregar uma porta
-mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.8sm8kka.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
+mongoose.connect(`${process.env.CONNECT_MONGO_URL}`)
 
     .then(() => {
         console.log('Conectado ao mongoDB')
