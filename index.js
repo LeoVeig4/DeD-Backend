@@ -35,9 +35,8 @@ app.get('/', (req, res) => {
 //
 //entregar uma porta
 app.listen(process.env.PORT);
-// mongoose.connect(`${process.env.CONNECT_MONGO_URL}`)
+mongoose.connect(`${process.env.CONNECT_MONGO_URL}`)
 
-//     .then(() => {
-//         console.log('Conectado ao mongoDB')
-
-//     }).catch((err) => console.log(err))
+    .then(() => {
+        console.log('Conectado ao mongoDB')
+    }).catch((err) => console.log(err))
