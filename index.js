@@ -34,9 +34,10 @@ app.get('/', (req, res) => {
 })
 //
 //entregar uma porta
+app.listen(3000);
 mongoose.connect(`${process.env.CONNECT_MONGO_URL}`)
 
     .then(() => {
         console.log('Conectado ao mongoDB')
-        app.listen(3000)
+
     }).catch((err) => console.log(err))
