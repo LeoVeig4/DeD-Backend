@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User.js');
+const User = require('../Models/User.js');
 
 // Rota para criar um novo usuário
 router.post('/', async (req, res) => {
