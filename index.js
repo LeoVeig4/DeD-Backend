@@ -35,7 +35,7 @@ app.use(express.json())
 
 app.use(cors({
     origin: '*',
-    exposedHeaders: 'Authorization', // Allow the 'Authorization' header
+    exposedHeaders: 'authorization', // Allow the 'Authorization' header
 }));
 
 //rotas
