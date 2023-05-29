@@ -11,7 +11,7 @@ const authenticateUser = async (req, res, next) => {
   }
 
   try {
-    const decodedToken = jwt.verify(token, process.env.salt);
+    const decodedToken = jwt.verify(token, process.env.SALT);
     const userId = decodedToken.userId;
     const user = await User.findById(userId);
 
@@ -34,7 +34,7 @@ router.get("/", async (req, res) => {
     return res.status(401).json({ message: 'Token de autenticação não fornecido' });
   }
 
-  const decodedToken = jwt.verify(token, process.env.salt);
+  const decodedToken = jwt.verify(token, process.env.SALT);
   const id = decodedToken.userId;
 
   const user = await User.findById(id);
@@ -58,7 +58,7 @@ router.post("/", authenticateUser, async (req, res) => {
   }
 
   try {
-    const decodedToken = jwt.verify(token, process.env.salt);
+    const decodedToken = jwt.verify(token, process.env.SALT);
     const id = decodedToken.userId;
 
     const user = await User.findByIdAndUpdate(id,
@@ -90,7 +90,7 @@ router.delete("/:type/:index", authenticateUser, async (req, res) => {
   }
 
   try {
-    const decodedToken = jwt.verify(token, process.env.salt);
+    const decodedToken = jwt.verify(token, process.env.SALT);
     const id = decodedToken.userId;
 
     const user = await User.findByIdAndUpdate(
