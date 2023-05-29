@@ -1,5 +1,6 @@
 //config inicial
 const express = require('express')
+const cors = require('cors');
 const mongoose = require('mongoose')
 require('dotenv').config();
 
@@ -14,13 +15,18 @@ app.use(
 
 app.use(express.json())
 
+app.use(cors({
+    origin: '*',
+    exposedHeaders: 'Authorization', // Allow the 'Authorization' header
+}));
+
 //rotas
 const userRoutes = require('./routes/userRoutes')
 const authRoutes = require("./routes/authRoutes")
 const cardsRoutes = require("./routes/cardsRoutes")
 app.use('/users', userRoutes)
 app.use('/auth', authRoutes)
-app.use("/cards",cardsRoutes)
+app.use("/cards", cardsRoutes)
 
 // rota inicial / endpoint
 app.get('/', (req, res) => {
@@ -29,6 +35,7 @@ app.get('/', (req, res) => {
 //
 //entregar uma porta
 mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.8sm8kka.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`)
+
     .then(() => {
         console.log('Conectado ao mongoDB')
         app.listen(3000)

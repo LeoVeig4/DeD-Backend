@@ -79,13 +79,12 @@ router.post("/", authenticateUser, async (req, res) => {
 });
 
 
-router.delete("/", authenticateUser, async (req, res) => {
+router.delete("/:type/:index", authenticateUser, async (req, res) => {
   const token = req.headers.authorization;
   if (!token) {
     return res.status(401).json({ message: 'Token de autenticação não fornecido' });
   }
-  const { index, type } = req.body;
-
+  const { index, type } = req.params;
   if (!['spells', 'monsters', 'classes'].includes(type)) {
     return res.status(400).json({ message: "Tipo inválido" });
   }
